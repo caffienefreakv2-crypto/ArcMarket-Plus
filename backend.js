@@ -123,15 +123,19 @@ function terminalCommand() {
 
 async function runInTerminal(shellCmd) {
   const fullCmd = `${shellCmd}; echo; read -p 'Press Enter to close...'`;
+  const unitName = `arcmarket-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
   for (const { bin, wrap } of terminalCommand()) {
     try {
-      // Launch via the systemd user session, not as a direct child of Electron:
-      // Chromium sets the Linux no_new_privs flag on itself, and once set it's
-      // inherited by all descendants, which blocks sudo's setuid escalation.
-      // systemd-run starts a fresh scope outside that inheritance chain.
+      // Launch as a transient systemd --user SERVICE (not `--scope`), which
+      // asks the systemd user manager to fork+exec the process itself.
+      // `--scope` instead re-parents an already-forked child of the caller
+      // into a new cgroup, so it still inherits Electron/Chromium's
+      // Linux no_new_privs flag, which blocks sudo's setuid escalation.
+      // A genuine transient service is forked by systemd (no_new_privs=0),
+      // so sudo works normally inside it.
       const proc = spawn(
         'systemd-run',
-        ['--user', '--scope', '--quiet', '--', bin, ...wrap(fullCmd)],
+        ['--user', '--collect', `--unit=${unitName}`, '--', bin, ...wrap(fullCmd)],
         { detached: true, stdio: 'ignore' }
       );
       proc.unref();
