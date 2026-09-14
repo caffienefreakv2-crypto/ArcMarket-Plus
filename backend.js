@@ -69,11 +69,20 @@ async function searchPackages(query) {
   return parseSearchResults(stdout);
 }
 
-async function packageInfo(name) {
-  const { stdout, code } = await run('paru', ['-Si', '--color=never', name]);
-  if (code === 0 && stdout.trim()) return parseInfoBlock(stdout);
+async function packageInfo(name, repo) {
+  // A package name can exist in more than one enabled repo (e.g. rebuilt in
+  // both chaotic-aur and cachyos); `paru -Si` then prints one block per repo
+  // back to back. Qualify with repo/name when known so we show the exact
+  // package the user clicked, and only parse the first block otherwise.
+  const target = repo ? `${repo}/${name}` : name;
+  const { stdout, code } = await run('paru', ['-Si', '--color=never', target]);
+  if (code === 0 && stdout.trim()) return parseInfoBlock(firstBlock(stdout));
   const local = await run('pacman', ['-Qi', name]);
-  return parseInfoBlock(local.stdout);
+  return parseInfoBlock(firstBlock(local.stdout));
+}
+
+function firstBlock(stdout) {
+  return stdout.split(/\n\s*\n/)[0] || '';
 }
 
 async function listInstalled() {

@@ -10,8 +10,8 @@
     <h1>ArcMarket+</h1>
     <nav>
       <button class="tab active" data-tab="search">Search</button>
-      <button class="tab" data-tab="installed">Installed</button>
-      <button class="tab" data-tab="updates">Updates</button>
+      <button class="tab" data-tab="installed">Installed <span id="installed-count" class="badge" hidden></span></button>
+      <button class="tab" data-tab="updates">Updates <span id="updates-count" class="badge" hidden></span></button>
     </nav>
     <button id="app-update-btn" title="Pull latest ArcMarket+ code from git">Check app updates</button>
   </header>
@@ -31,11 +31,18 @@
     </section>
 
     <section id="tab-installed" class="tab-panel">
+      <div class="panel-toolbar">
+        <input id="installed-filter" type="text" placeholder="Filter installed packages..." />
+        <button id="refresh-installed-btn" class="ghost-btn">Refresh</button>
+      </div>
       <ul id="installed-list" class="package-list full"></ul>
     </section>
 
     <section id="tab-updates" class="tab-panel">
-      <button id="update-all-btn">Update All</button>
+      <div class="panel-toolbar">
+        <button id="update-all-btn">Update All</button>
+        <button id="refresh-updates-btn" class="ghost-btn">Refresh</button>
+      </div>
       <ul id="updates-list" class="package-list full"></ul>
     </section>
   </main>

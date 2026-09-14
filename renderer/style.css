@@ -40,8 +40,23 @@ nav { display: flex; gap: 4px; flex: 1; }
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
+.tab:hover { background: var(--bg); }
 .tab.active { background: var(--accent); color: #fff; }
+
+.badge {
+  display: inline-block;
+  min-width: 16px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #d1495b;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.tab.active .badge { background: rgba(255,255,255,0.3); }
 
 #app-update-btn {
   background: var(--bg);
@@ -58,13 +73,17 @@ main { flex: 1; overflow: hidden; display: flex; }
 .tab-panel.active { display: flex; flex-direction: column; }
 
 .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
-#search-input {
+#search-input, #installed-filter {
   flex: 1;
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg-alt);
   color: var(--text);
+}
+#search-input:focus, #installed-filter:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 #search-btn, #update-all-btn {
   padding: 8px 14px;
@@ -73,7 +92,21 @@ main { flex: 1; overflow: hidden; display: flex; }
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  transition: opacity 0.15s ease;
 }
+#search-btn:hover, #update-all-btn:hover { opacity: 0.85; }
+
+.ghost-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.ghost-btn:hover { background: var(--bg-alt); }
+
+.panel-toolbar { display: flex; gap: 8px; margin-bottom: 12px; }
 
 .content-split { flex: 1; display: flex; gap: 16px; overflow: hidden; }
 
@@ -93,24 +126,36 @@ main { flex: 1; overflow: hidden; display: flex; }
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  transition: background 0.1s ease;
 }
 .package-list li:hover { background: var(--bg-alt); }
+.package-list li.selected { background: var(--bg-alt); border-left: 3px solid var(--accent); }
+.package-list li.hint { cursor: default; color: var(--text-dim); }
+.package-list li.hint:hover { background: none; }
 .package-list .name { font-weight: 600; }
 .package-list .repo-tag {
   font-size: 11px;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 1px 6px;
   align-self: flex-start;
+  white-space: nowrap;
+}
+.repo-tag.repo-official { color: #5c9eff; border: 1px solid #5c9eff44; }
+.repo-tag.repo-aur { color: #e0a03c; border: 1px solid #e0a03c44; }
+.repo-tag.repo-chaotic { color: #b877e8; border: 1px solid #b877e844; }
+.repo-tag.repo-cn { color: #e8607a; border: 1px solid #e8607a44; }
+.repo-tag.repo-cachyos { color: #3ba55d; border: 1px solid #3ba55d44; }
+.repo-tag.repo-other { color: var(--text-dim); border: 1px solid var(--border); }
+
+.installed-badge {
+  font-size: 10px;
+  color: #3ba55d;
+  border: 1px solid #3ba55d55;
+  border-radius: 4px;
+  padding: 0 4px;
+  margin-left: 6px;
 }
 .package-list .desc { color: var(--text-dim); font-size: 12px; display: block; }
-.package-list .actions button {
-  padding: 4px 10px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-}
 
 .detail-pane {
   flex: 1;
@@ -122,8 +167,22 @@ main { flex: 1; overflow: hidden; display: flex; }
 .detail-pane .hint { color: var(--text-dim); }
 .detail-pane dl { display: grid; grid-template-columns: 160px 1fr; gap: 6px 12px; }
 .detail-pane dt { color: var(--text-dim); }
+.detail-pane dd { margin: 0; word-break: break-word; }
+.detail-pane a.ext-link { color: var(--accent); text-decoration: none; }
+.detail-pane a.ext-link:hover { text-decoration: underline; }
+
+.warning-banner {
+  background: #d1495b22;
+  border: 1px solid #d1495b66;
+  color: #ff8a97;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.detail-actions { display: flex; gap: 8px; margin-top: 12px; }
 .detail-pane .install-btn, .detail-pane .remove-btn {
-  margin-top: 12px;
   padding: 8px 16px;
   border-radius: 6px;
   border: none;
@@ -131,7 +190,11 @@ main { flex: 1; overflow: hidden; display: flex; }
   color: #fff;
 }
 .detail-pane .install-btn { background: #3ba55d; }
+.detail-pane .install-btn:hover { opacity: 0.85; }
+.detail-pane .install-btn:disabled { opacity: 0.6; cursor: default; }
 .detail-pane .remove-btn { background: #d1495b; }
+.detail-pane .remove-btn:hover { opacity: 0.85; }
+.detail-pane .remove-btn:disabled { opacity: 0.6; cursor: default; }
 
 #status-bar {
   padding: 6px 16px;
@@ -140,3 +203,8 @@ main { flex: 1; overflow: hidden; display: flex; }
   font-size: 12px;
   color: var(--text-dim);
 }
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
