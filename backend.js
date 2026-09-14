@@ -116,7 +116,15 @@ async function runInTerminal(shellCmd) {
   const fullCmd = `${shellCmd}; echo; read -p 'Press Enter to close...'`;
   for (const { bin, wrap } of terminalCommand()) {
     try {
-      const proc = spawn(bin, wrap(fullCmd), { detached: true, stdio: 'ignore' });
+      // Launch via the systemd user session, not as a direct child of Electron:
+      // Chromium sets the Linux no_new_privs flag on itself, and once set it's
+      // inherited by all descendants, which blocks sudo's setuid escalation.
+      // systemd-run starts a fresh scope outside that inheritance chain.
+      const proc = spawn(
+        'systemd-run',
+        ['--user', '--scope', '--quiet', '--', bin, ...wrap(fullCmd)],
+        { detached: true, stdio: 'ignore' }
+      );
       proc.unref();
       return { launched: true, terminal: bin };
     } catch (e) {
