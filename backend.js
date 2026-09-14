@@ -127,7 +127,7 @@ async function runInTerminal(shellCmd) {
 }
 
 function installPackage(name) {
-  return runInTerminal(`paru -S ${shellEscape(name)}`);
+  return runInTerminal(`paru -S --skipreview ${shellEscape(name)}`);
 }
 
 function removePackage(name) {
@@ -135,7 +135,7 @@ function removePackage(name) {
 }
 
 function updateAll() {
-  return runInTerminal('paru -Syu');
+  return runInTerminal('paru -Syu --skipreview');
 }
 
 function shellEscape(str) {
