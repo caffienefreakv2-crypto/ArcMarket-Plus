@@ -1,0 +1,12 @@
+{
+  "name": "arcmarket-plus",
+  "productName": "ArcMarket+",
+  "version": "0.1.0",
+  "description": "A native app store for CachyOS covering official repos, the AUR, and Chaotic-AUR.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "asmodeus",
+  "license": "MIT"
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>ArcMarket+</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>ArcMarket+</h1>
+    <nav>
+      <button class="tab active" data-tab="search">Search</button>
+      <button class="tab" data-tab="installed">Installed</button>
+      <button class="tab" data-tab="updates">Updates</button>
+    </nav>
+    <button id="app-update-btn" title="Pull latest ArcMarket+ code from git">Check app updates</button>
+  </header>
+
+  <main>
+    <section id="tab-search" class="tab-panel active">
+      <div class="search-bar">
+        <input id="search-input" type="text" placeholder="Search official repos + AUR + Chaotic-AUR..." />
+        <button id="search-btn">Search</button>
+      </div>
+      <div class="content-split">
+        <ul id="search-results" class="package-list"></ul>
+        <div id="detail-pane" class="detail-pane">
+          <p class="hint">Select a package to see details.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-installed" class="tab-panel">
+      <ul id="installed-list" class="package-list full"></ul>
+    </section>
+
+    <section id="tab-updates" class="tab-panel">
+      <button id="update-all-btn">Update All</button>
+      <ul id="updates-list" class="package-list full"></ul>
+    </section>
+  </main>
+
+  <footer id="status-bar">Ready.</footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

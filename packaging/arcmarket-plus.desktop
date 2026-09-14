@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=ArcMarket+
+Comment=App store for official repos, the AUR, and Chaotic-AUR
+Exec=/home/asmodeus/Projects/ArcMarket-Plus/run.sh
+Icon=/home/asmodeus/Projects/ArcMarket-Plus/assets/icon.png
+Terminal=false
+Categories=System;PackageManager;
+StartupWMClass=ArcMarket+

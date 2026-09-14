@@ -1,0 +1,6 @@
+[Unit]
+Description=Pull latest ArcMarket+ commits from GitHub
+
+[Service]
+Type=oneshot
+ExecStart=%h/Projects/ArcMarket-Plus/scripts/autopull.sh
